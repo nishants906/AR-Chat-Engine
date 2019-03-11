@@ -22,8 +22,9 @@
 
 <android.support.v7.widget.RecyclerView
     android:id="@+id/rv_chat"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:src="@drawable/ic_launcher_background"
     android:background="#00ff001C">
 
 </android.support.v7.widget.RecyclerView>
