@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="13dp"
+    android:paddingStart="10dp"
+    android:id="@+id/rl_item"
+    android:background="#00000000"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/AppTheme">
+
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gray_bubble"
+        android:text=" Checkip"
+        android:visibility="visible"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>
