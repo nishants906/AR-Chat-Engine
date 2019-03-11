@@ -9,14 +9,94 @@
     android:theme="@style/AppTheme">
 
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/chatuser"
+        android:tint="#ececec"
+        android:id="@+id/profile"
+        android:layout_marginStart="5dp"
+        />
+
     <TextView
-        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/gray_bubble"
-        android:text=" Checkip"
-        android:visibility="visible"
-        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/profile"
+        android:text="  "
+        android:id="@+id/name"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:textSize="@dimen/textsizeMedium"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/name"
+        android:text=" "
+        android:layout_alignParentEnd="true"
+        android:id="@+id/time"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="5dp"
+        android:gravity="end"
+        android:textSize="@dimen/textsizeSmall"
+        android:textColor="#ecececec"/>
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:text=" "
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/time"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="15dp"
+        android:textSize="10dp"
+        android:id="@+id/readtick"
+        android:src="@drawable/read"
+        android:visibility="gone"
+        android:tint="#bebebe"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        android:layout_toRightOf="@id/profile"
+        android:text=" "
+        android:layout_marginEnd="10dp"
+        android:id="@+id/bio"
+        android:textSize="@dimen/textsizeMedium"
+        android:maxLines="1"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_toLeftOf="@id/readtick"
+        android:layout_marginStart="15dp"
+        android:textColor="#ecececec"
+        android:visibility="gone"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bio"
+        android:layout_toRightOf="@id/profile"
+        android:text=" "
+        android:id="@+id/distance"
+        android:textSize="@dimen/textsizeMedium"
+        android:visibility="gone"
+        android:layout_marginStart="15dp"
+        android:textColor="#ecececec"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_line_color"
+        android:layout_below="@id/distance"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginStart="65dp"
+        android:layout_marginEnd="5dp"
+
         />
 
 </RelativeLayout>

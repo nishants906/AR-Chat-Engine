@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_small"
+    android:background="@android:color/transparent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/AppTheme">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gray_bubble"
+        android:text="Saransh"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/padding_small"
+        android:layout_margin="@dimen/margin_medium"
+        android:textSize="@dimen/textsizeMedium"
+        android:textColor="@color/black"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_medium"
+        android:paddingRight="@dimen/padding_medium"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/send_bubble"
+        android:maxWidth="250dp"
+        android:visibility="visible"
+        android:layout_below="@id/date"
+        android:id="@+id/rl_send"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/send"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/textsizeMedium"
+            android:visibility="visible"
+            android:text="sdfdsfsdf"
+            android:maxWidth="250dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#f2f2f2"
+                android:textSize="@dimen/textsizeVerySmall"
+                android:visibility="visible"
+                android:text="12:12 "/>
+
+            <ImageView
+                android:id="@+id/readtick"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:tint="#f2f2f2"
+                android:src="@drawable/read" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/recieve_bubble"
+        android:id="@+id/rl_recieve"
+        android:maxWidth="250dp"
+        android:minWidth="70dp"
+        android:visibility="gone"
+        android:gravity="start"
+        android:layout_below="@id/date"
+        android:paddingLeft="@dimen/padding_medium"
+        android:paddingRight="@dimen/padding_medium"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recieve"
+            android:textColor="@color/textcolor_medium"
+            android:textSize="@dimen/textsizeMedium"
+            android:visibility="visible"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:maxWidth="250dp"
+            android:minWidth="70dp"
+            android:text="dfsfsdfsdfsfsfsfsdfsdfsdfdfsdfsdfsdfsdfsdffsdfsdf " />
+
+
+        <TextView
+            android:id="@+id/timerecieve"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/recieve"
+            android:text="12:12"
+            android:textColor="@color/textcolor_light"
+            android:textSize="@dimen/textsizeVerySmall"
+            android:visibility="visible" />
+    </LinearLayout>
+
+
+
+</RelativeLayout>

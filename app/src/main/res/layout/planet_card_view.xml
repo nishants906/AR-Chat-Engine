@@ -17,15 +17,50 @@
 <RelativeLayout android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#00ff001C"
     android:orientation="vertical">
 
 <android.support.v7.widget.RecyclerView
     android:id="@+id/rv_chat"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="500dp"
     android:src="@drawable/ic_launcher_background"
-    android:background="#00ff001C">
+    android:background="#00ff001C"
+    android:layout_above="@id/ll_send">
 
 </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/ll_send"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/margin_small"
+
+        android:background="@drawable/shape"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/mssg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:layout_weight="0.8"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/mssg_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:src="@drawable/ic_menu_send"
+            android:tint="@color/colorWhite"
+            android:background="@drawable/ic_menu_send"
+            android:elevation="0dp"
+            app:elevation="0dp"
+
+            />
+
+
+    </LinearLayout>
 </RelativeLayout>

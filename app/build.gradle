@@ -23,6 +23,20 @@ android {
     }
 }
 
+repositories
+        {
+
+            google()
+            jcenter()
+            maven
+                    {
+                        url "https://jitpack.io"
+                    }
+
+            mavenCentral()
+
+        }
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -39,4 +53,23 @@ dependencies {
 
     implementation 'com.google.ar:core:1.7.0'
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.7.0'
+
+
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
+
+    implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
+
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+    implementation 'de.hdodenhof:circleimageview:1.2.1'
+
+    implementation 'org.apache.commons:commons-lang3:3.6'
+
 }

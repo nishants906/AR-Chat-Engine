@@ -3,6 +3,7 @@ package com.example.nishant.ar_chat_engine;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,12 +40,29 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
 
     ArFragment arFragment;
     private ArSceneView arSceneView;
     private boolean installRequested;
 
+    Retrofit.Builder builder;
+    Retrofit retrofit;
+    DataInterface client;
+    List<ChatUser> list;
+    LinearLayoutManager lm;
+    public static RecyclerView rv;
+
+    ChatHistoryAdapter chatlistAdapter;
+    public static LinearLayout ll_send;
+    public static FloatingActionButton btn_send;
+    public static EditText et_mssg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +100,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//                DemoUtils.displayError(this, "Unable to load renderable", ex);
-//            }
-//
-//            return null;
-//        });
+
+
+        builder = new Retrofit.Builder().baseUrl(djangoBaseUrl).addConverterFactory(GsonConverterFactory.create());
+        retrofit = builder.build();
+        client = retrofit.create(DataInterface.class);
 
 
             arFragment.setOnTapArPlaneListener(new BaseArFragment.OnTapArPlaneListener() {
@@ -133,15 +152,19 @@ public class MainActivity extends AppCompatActivity {
 
         View v = renderable.getView();
 
-        RecyclerView rv = v.findViewById(R.id.rv_chat);
-        ChatAdapter chatAdapter = new ChatAdapter(getApplicationContext());
-        LinearLayoutManager lm = new LinearLayoutManager(getApplicationContext());
-        rv.setLayoutManager(lm);
-        rv.setAdapter(chatAdapter);
+        rv = v.findViewById(R.id.rv_chat);
+        ll_send = v.findViewById(R.id.ll_send);
+        et_mssg = v.findViewById(R.id.mssg);
+        btn_send =  v.findViewById(R.id.mssg_send);
+
+
+//        ChatAdapter chatAdapter = new ChatAdapter(getApplicationContext());
+        lm = new LinearLayoutManager(getApplicationContext());
 
 
 
-        Call<List<ChatUser>> chatUserCall = client.getchatuser(getSharedPreferences("Tokenkey", MODE_PRIVATE).getString("token", "token1"), String.valueOf(pageposition));
+
+        Call<List<ChatUser>> chatUserCall = client.getchatuser("token a074856d07f11acfaa0a979e8c773b2611f429b2", String.valueOf(1));
         chatUserCall.enqueue(new Callback<List<ChatUser>>() {
             @Override
             public void onResponse(Call<List<ChatUser>> call, Response<List<ChatUser>> response) {
@@ -155,22 +178,19 @@ public class MainActivity extends AppCompatActivity {
                             list.add(response.body().get(i));
                         }
 
-                        progressBar.setVisibility(View.GONE);
                         lm = new LinearLayoutManager(getApplicationContext());
-                        chatlistAdapter = new ChatHistoryAdapter(getApplicationContext(), list,HomeActivity.userid);
-                        rv_chat.setAdapter(chatlistAdapter);
-                        rv_chat.setLayoutManager(lm);
-                        rv_chat.setHasFixedSize(true);
-                        rv_chat.addOnScrollListener(new EndlessRecyclerOnScrollListener(lm) {
+                        chatlistAdapter = new ChatHistoryAdapter(getApplicationContext(), list,"9");
+                        rv.setAdapter(chatlistAdapter);
+                        rv.setLayoutManager(lm);
+                        rv.setHasFixedSize(true);
+                        rv.addOnScrollListener(new EndlessRecyclerOnScrollListener(lm) {
                             @Override
                             public void onLoadMore(int current_page)
                             {
-                                ploader.setVisibility(View.VISIBLE);
                                 Call<List<ChatUser>> chatUserCall = client.getchatuser(getSharedPreferences("Tokenkey", MODE_PRIVATE).getString("token", "token1"), String.valueOf(current_page));
                                 chatUserCall.enqueue(new Callback<List<ChatUser>>() {
                                     @Override
                                     public void onResponse(Call<List<ChatUser>> call, Response<List<ChatUser>> response) {
-                                        ploader.setVisibility(View.GONE);
                                         if (response.body()!=null) {
 
                                             for(int i =0;i<response.body().size();i++){
@@ -194,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        rl_nochat.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
                     }
                 }
             }
