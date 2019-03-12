@@ -1,5 +1,6 @@
 package com.example.nishant.ar_chat_engine;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +31,7 @@ import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
@@ -55,6 +58,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.nishant.ar_chat_engine.ChatHistoryAdapter.id;
 import static com.example.nishant.ar_chat_engine.ChatHistoryAdapter.messages;
 
 public class MainActivity extends AppCompatActivity {
@@ -101,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         arFragment.getPlaneDiscoveryController().setInstructionView(null);
 
         try {
-            mSocket = IO.socket("https://share.halanx.com/");
             mSocket.on(Socket.EVENT_CONNECT, onConnect);
             //run
             mSocket.connect();
@@ -116,6 +119,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+        builder = new Retrofit.Builder().baseUrl(djangoBaseUrl).addConverterFactory(GsonConverterFactory.create());
+        retrofit = builder.build();
+        client = retrofit.create(DataInterface.class);
+
+
         try {
             Session session = DemoUtils.createArSession(this, installRequested);
             Config config = new Config(session);
@@ -124,28 +134,39 @@ public class MainActivity extends AppCompatActivity {
             session.configure(config);
             arSceneView.setupSession(session);
 
-        } catch (UnavailableException e) {
+//            Session session = new Session(MainActivity.this);
+//            arFragment.getArSceneView().setupSession(session);
+//
+//            Session session1 = arFragment.getArSceneView().getSession();
+//
+//            Log.d("sessions",String.valueOf(session1));
+//            float[] pos = { 2,0,0 };
+//            float[] rotation = {0,0,0,0};
+//
+//
+//            Anchor anchor =  session.createAnchor(new Pose(pos,rotation));
+//            Log.d("sessions",String.valueOf(anchor));
+//
+//            placeObject(arFragment,anchor);
+//
+//
+        } catch (Exception e) {
             Log.e("erroroccur",e.toString());
         }
 
 
+//        arFragment.getArSceneView().getArFrame();
 
 
-
-
-        builder = new Retrofit.Builder().baseUrl(djangoBaseUrl).addConverterFactory(GsonConverterFactory.create());
-        retrofit = builder.build();
-        client = retrofit.create(DataInterface.class);
-
-
+//        anchorNode.setParent(arFragment.getArSceneView().getScene());
             arFragment.setOnTapArPlaneListener(new BaseArFragment.OnTapArPlaneListener() {
                 @Override
                 public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
                     if (plane.getType()!=Plane.Type.HORIZONTAL_UPWARD_FACING){
                         return;
                     }
+
                     Anchor anchor = hitResult.createAnchor();
-                    placeObject(arFragment,anchor);
 
                 }
             });
@@ -272,8 +293,20 @@ return true;
             int keycode = event.getKeyCode();
             int keyunicode = event.getUnicodeChar(event.getMetaState() );
             char character = (char) keyunicode;
+            Log.d("keyevent", String.valueOf(character));
 
-            et_mssg.setText(et_mssg.getText().toString().trim()+character);
+            if (event.getKeyCode()==62){
+                et_mssg.setText(et_mssg.getText().toString()+" ");
+            }
+            if (event.getKeyCode()==67){
+                if(et_mssg.getText().length()!=0) {
+                    et_mssg.setText(et_mssg.getText().toString().substring(0, (et_mssg.getText().length() - 1)));
+                }
+            }
+            else {
+                et_mssg.setText(et_mssg.getText().toString() + character);
+            }
+            et_mssg.setSelection(et_mssg.getText().length());
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -446,4 +479,13 @@ return true;
         mSocket.disconnect();
         super.onBackPressed();
     }
+
+    @Override
+    protected void onDestroy() {
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(et_mssg.getWindowToken(),0);
+
+        super.onDestroy();
+    }
+
 }

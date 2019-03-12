@@ -184,15 +184,28 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                         }
                     });
 
-                    et_mssg.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    et_mssg.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onFocusChange(View v, boolean hasFocus) {
-                            if (hasFocus) {
-                                InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-                            }
+                        public void onClick(View v) {
+                            InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+//
                         }
                     });
+
+//                    et_mssg.seo(new View.OnFocusChangeListener() {
+//                        @Override
+//                        public void onFocusChange(View v, boolean hasFocus) {
+////                            if (hasFocus) {
+//                                InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+////                            }
+////                            else{
+////                                InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+////                                imm.hideSoftInputFromWindow(et_mssg.getWindowToken(),0);
+////                            }
+//                        }
+//                    });
 
 
                     btn_send.setOnClickListener(new View.OnClickListener() {
