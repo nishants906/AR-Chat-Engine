@@ -35,4 +35,9 @@ public interface DataInterface {
     Call<Usermessages> getusermessage(@Header("Authorization")String token, @Path("userID") String storeID,@Query("page") String pagenumber);
 
 
+    // Post for create message in chat
+    @POST("chat/messages/create/")
+    Call<MessageCreate> createmessage(@Header("Authorization") String token, @Body MessageCreate messageCreate);
+
+
 }

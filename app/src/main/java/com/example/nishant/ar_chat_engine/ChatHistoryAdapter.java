@@ -14,10 +14,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -37,6 +41,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
+import static com.example.nishant.ar_chat_engine.MainActivity.btn_send;
+import static com.example.nishant.ar_chat_engine.MainActivity.et_mssg;
+import static com.example.nishant.ar_chat_engine.MainActivity.ll_send;
 import static com.example.nishant.ar_chat_engine.MainActivity.rv;
 
 /**
@@ -52,6 +61,8 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     Retrofit.Builder builder;
     Retrofit retrofit;
     DataInterface client;
+    public static List messages;
+    public static String id;
 
     public ChatHistoryAdapter(Context context, List<ChatUser> chatUser, String userid) {
         c = context;
@@ -88,23 +99,17 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         {
             holder.bio.setVisibility(View.VISIBLE);
             holder.bio.setText(
-                    StringEscapeUtils.unescapeJava(chatUser.get(position).getMessages().getMessage()));
+                    Html.fromHtml(StringEscapeUtils.unescapeJava(chatUser.get(position).getMessages().getMessage())));
         }
 
 
         holder.rl_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (!isNetworkAvailable()) {
-
-//                    Snackbar snackbar = Snackbar
-////                            .make(ChatHistory.coordinatorLayout, "No internet connectivity", Snackbar.LENGTH_LONG);
-//                    snackbar.show();
-                } else {
+                {
 
 
-                    String id = chatUser.get(position).getProfile().getId().toString();
+                     id = chatUser.get(position).getProfile().getId().toString();
 
 
                     Call<Usermessages> usermessagesCall = client.getusermessage("token a074856d07f11acfaa0a979e8c773b2611f429b2", chatUser.get(position).getProfile().getId().toString(), "1");
@@ -113,9 +118,10 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                         public void onResponse(Call<Usermessages> call, Response<Usermessages> response) {
 
                             Log.d("asdfghjkl", String.valueOf(response.body()));
+                            ll_send.setVisibility(View.VISIBLE);
 
 
-                            List messages = new ArrayList<>();
+                            messages = new ArrayList<>();
                             if (response.body().getMessages() != null) {
                                 if (response.body().getMessages().size() > 0) {
                                     for (int i = 0; i < response.body().getMessages().size(); i++) {
@@ -177,39 +183,117 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
 
                         }
                     });
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+
+                    et_mssg.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus) {
+                                InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+                            }
+                        }
+                    });
+
+
+                    btn_send.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            MessageCreate messageCreate = new MessageCreate(Integer.parseInt(id), (StringEscapeUtils.unescapeJava(et_mssg.getText().toString())));
+                            Log.d("messagedata", String.valueOf(messageCreate));
+                            Call<MessageCreate> messageCreateCall = client.createmessage("token a074856d07f11acfaa0a979e8c773b2611f429b2", messageCreate);
+                            Log.d("messagedata", String.valueOf(messageCreate.getReceiver()));
+                            Log.d("messagedata", String.valueOf(messageCreateCall));
+
+
+                            Messages m = new Messages();
+                            m.setId(1);
+                            m.setSender(Integer.valueOf(userid));
+                            m.setMessage(et_mssg.getText().toString());
+                            m.setReceiver(Integer.valueOf(id));
+                            m.setTimestamp(new java.util.Date());
+                            m.setIs_read(false);
+                            messages.add(0, m);
+                            Log.e("update", String.valueOf(m));
+
+
+                            ChatWindowAdapter chatWindowAdapter = new ChatWindowAdapter(c, messages, id);
+//                    chatWindowAdapter.notifyDataSetChanged();
+
+                            LinearLayoutManager layoutManager = new LinearLayoutManager(c);
+                            layoutManager.setReverseLayout(true);
+                            layoutManager.setStackFromEnd(true);
+                            rv.setLayoutManager(layoutManager);
+                            rv.setAdapter(chatWindowAdapter);
+                            rv.setHasFixedSize(true);
+                            rv.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+                                @Override
+                                public void onLoadMore(int current_page) {
+
+
+                                    Call<Usermessages> usermessagesCall = client.getusermessage("token a074856d07f11acfaa0a979e8c773b2611f429b2", id, String.valueOf(current_page));
+                                    usermessagesCall.enqueue(new Callback<Usermessages>() {
+                                        @Override
+                                        public void onResponse(Call<Usermessages> call, Response<Usermessages> response) {
+
+                                            if (response.body() != null) {
+                                                for (int i = 0; i < response.body().getMessages().size(); i++) {
+                                                    messages.add(response.body().getMessages().get(i));
+                                                }
+
+
+                                                chatWindowAdapter.notifyItemRangeInserted(chatWindowAdapter.getItemCount(), messages.size() - 1);
+                                            }
+
+//                        Log.d("responselength", String.valueOf(posts.size()));
+
+
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Usermessages> call, Throwable t) {
+
+                                        }
+                                    });
+
+
+                                }
+                            });
+                            rv.scrollToPosition(0);
+//                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//                                        imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+                            et_mssg.setText("");
+
+
+                            messageCreateCall.enqueue(new Callback<MessageCreate>() {
+                                @Override
+                                public void onResponse(Call<MessageCreate> call, Response<MessageCreate> response) {
+                                    Log.d("responsebody", String.valueOf(response.body()));
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<MessageCreate> call, Throwable t) {
+                                    Log.d("responsebody", String.valueOf(t.getMessage()));
+                                }
+                            });
+                        }
+                    });
+
                 }
+
+                try {
+
+                    SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
+                    holder.time.setText(parseFormat.format(chatUser.get(position).getMessages().getTimestamp()));
+
+                } catch (Exception e) {
+                    System.out.println(e);
+
+                }
+
             }
         });
-        try {
-
-            SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
-            holder.time.setText(parseFormat.format(chatUser.get(position).getMessages().getTimestamp()));
-
-        }
-        catch(Exception e){
-            System.out.println(e);
-
-        }
-
     }
 
     @Override
